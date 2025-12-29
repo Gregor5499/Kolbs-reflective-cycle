@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolb's Reflective Learning Cycle</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-base: 8px;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.5;
+            color: #1f2121;
+            background-color: var(--color-cream-50);
+            min-height: 100vh;
+            transition: background-color var(--duration-normal) var(--ease-standard);
+        }
+
+        body {
+            margin: 0;
+            padding: var(--space-20);
+            min-height: 100vh;
+            transition: background-color var(--duration-normal) var(--ease-standard), color var(--duration-normal) var(--ease-standard);
+        }
+
+        body.dark-mode {
+            background-color: #2a2a2a;
+            color: #e8e8e8;
+        }
+
+        html.dark-mode {
+            background-color: #2a2a2a;
+        }
+
+        body.dark-mode .main-content {
+            background-color: #353535;
+            border-color: #4a4a4a;
+        }
+
+        body.dark-mode .prompt-container {
+            background-color: #404040;
+        }
+
+        body.dark-mode .summary-container {
+            background-color: #404040;
+        }
+
+        body.dark-mode textarea {
+            background-color: #353535;
+            color: #e8e8e8;
+            border-color: #4a4a4a;
+        }
+
+        body.dark-mode textarea:focus {
+            border-color: var(--color-teal-500);
+            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.2);
+        }
+
+        body.dark-mode .stage-subtitle {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .prompt-text {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .summary-text {
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: #404040;
+            color: #e8e8e8;
+            border-color: #5a5a5a;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #4a4a4a;
+            border-color: var(--color-teal-500);
+        }
+
+        body.dark-mode #downloadModal {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        body.dark-mode #downloadModal > div {
+            background: #353535;
+            color: #e8e8e8;
+        }
+
+        body.dark-mode #downloadModal h3 {
+            color: var(--color-teal-500);
+        }
+
+        body.dark-mode #downloadModal p {
+            color: #b0b0b0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: var(--space-20);
+            right: var(--space-20);
+            background: none;
+            border: 1px solid var(--color-gray-300);
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--duration-normal) var(--ease-standard);
+            width: 40px;
+            height: 40px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--color-teal-500);
+            color: var(--color-teal-500);
+        }
+
+        body.dark-mode .theme-toggle {
+            border-color: #5a5a5a;
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            border-color: var(--color-teal-500);
+            color: var(--color-teal-500);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+
+        h1 {
+            margin: 0 0 var(--space-8) 0;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            color: var(--color-slate-500);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-32);
+            gap: var(--space-12);
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background-color: var(--color-gray-200);
+            border-radius: 2px;
+            transition: background-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .progress-step.active {
+            background-color: var(--color-teal-500);
+        }
+
+        .progress-step.completed {
+            background-color: var(--color-teal-500);
+        }
+
+        .stages-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-32);
+            gap: var(--space-8);
+        }
+
+        .stage-indicator {
+            text-align: center;
+            font-size: 12px;
+            color: var(--color-gray-300);
+            font-weight: 500;
+        }
+
+        .stage-indicator.active {
+            color: var(--color-teal-500);
+        }
+
+        .main-content {
+            background: var(--color-white);
+            border-radius: var(--radius-base);
+            padding: var(--space-24);
+            border: 1px solid var(--color-gray-200);
+        }
+
+        .stage {
+            display: none;
+        }
+
+        .stage.active {
+            display: block;
+            animation: fadeIn var(--duration-normal) var(--ease-standard);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stage-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 var(--space-8) 0;
+            color: var(--color-teal-500);
+        }
+
+        .stage-subtitle {
+            color: var(--color-slate-500);
+            font-size: 13px;
+            margin: 0 0 var(--space-20) 0;
+        }
+
+        .prompt-container {
+            background-color: var(--color-gray-200);
+            border-left: 3px solid var(--color-teal-500);
+            padding: var(--space-12) var(--space-16);
+            border-radius: 4px;
+            margin-bottom: var(--space-20);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt-text {
+            font-size: 13px;
+            color: var(--color-slate-500);
+            margin: 0;
+            font-style: italic;
+            min-height: 1.5em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: var(--space-12);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-base);
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color var(--duration-normal) var(--ease-standard);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-teal-500);
+            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--space-12);
+            margin-top: var(--space-24);
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: var(--space-8) var(--space-20);
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .btn-primary {
+            background-color: var(--color-teal-500);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-teal-600);
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--color-gray-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-gray-200);
+            color: #1f2121;
+            border: 1px solid var(--color-gray-300);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-gray-200);
+            border-color: var(--color-teal-500);
+        }
+
+        .summary-container {
+            background-color: var(--color-gray-200);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-20);
+        }
+
+        .summary-item {
+            margin-bottom: var(--space-12);
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--color-slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: var(--space-4);
+        }
+
+        .summary-text {
+            font-size: 13px;
+            color: #1f2121;
+            margin: 0;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .download-btn {
+            margin-top: var(--space-24);
+            width: 100%;
+        }
+
+        #downloadModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #downloadModal.active {
+            display: flex;
+        }
+
+        #downloadModal > div {
+            background: var(--color-white);
+            border-radius: var(--radius-base);
+            padding: var(--space-24);
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        #downloadModal h3 {
+            margin: 0 0 var(--space-16) 0;
+            color: var(--color-teal-500);
+        }
+
+        #downloadModal p {
+            margin: 0 0 var(--space-20) 0;
+            color: var(--color-slate-500);
+            font-size: 14px;
+        }
+
+        #downloadModal button {
+            width: 100%;
+        }
+
+        #downloadModal .btn-primary:not(:first-of-type) {
+            margin-top: var(--space-12);
+        }
+
+        #downloadModal .btn-secondary {
+            margin-top: var(--space-12);
+        }
+
+        /* Landing Page Styles */
+        .landing-page {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-cream-50) 0%, #f0f8fb 100%);
+        }
+
+        .landing-page.active {
+            display: block;
+        }
+
+        body.dark-mode .landing-page {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f3a42 100%);
+        }
+
+        .landing-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--space-32);
+        }
+
+        .landing-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+            padding-top: var(--space-32);
+        }
+
+        .landing-header h1 {
+            font-size: 48px;
+            margin: 0 0 var(--space-16) 0;
+            color: var(--color-teal-500);
+            letter-spacing: -0.02em;
+        }
+
+        .landing-subtitle {
+            font-size: 20px;
+            color: var(--color-slate-500);
+            margin: 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        body.dark-mode .landing-subtitle {
+            color: #b0b0b0;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin-bottom: var(--space-32);
+        }
+
+        .comparison-section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin: 0 0 var(--space-32) 0;
+            color: #1f2121;
+        }
+
+        body.dark-mode .comparison-section h2 {
+            color: #e8e8e8;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: var(--space-20);
+            align-items: center;
+            margin-bottom: var(--space-24);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .comparison-card {
+            flex: 1;
+            min-width: 280px;
+            padding: var(--space-24);
+            border-radius: var(--radius-base);
+            border: 2px solid;
+        }
+
+        .comparison-card.negative {
+            background-color: #fff5f5;
+            border-color: #ffdbdb;
+        }
+
+        body.dark-mode .comparison-card.negative {
+            background-color: rgba(255, 84, 89, 0.1);
+            border-color: rgba(255, 84, 89, 0.3);
+        }
+
+        .comparison-card.positive {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        body.dark-mode .comparison-card.positive {
+            background-color: rgba(50, 184, 198, 0.1);
+            border-color: rgba(50, 184, 198, 0.3);
+        }
+
+        .comparison-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-slate-500);
+            margin-bottom: var(--space-16);
+        }
+
+        body.dark-mode .comparison-label {
+            color: #b0b0b0;
+        }
+
+        .comparison-content {
+            margin-bottom: var(--space-16);
+        }
+
+        .mistake-text {
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .mistake-text.strikethrough {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .mistake-text.corrected {
+            color: #1f2121;
+            font-style: normal;
+        }
+
+        body.dark-mode .mistake-text.corrected {
+            color: #e8e8e8;
+        }
+
+        .emotion {
+            padding: var(--space-12) var(--space-16);
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .emotion.negative-emotion {
+            background-color: #ffe8e8;
+            color: #c41e3a;
+        }
+
+        body.dark-mode .emotion.negative-emotion {
+            background-color: rgba(255, 84, 89, 0.2);
+            color: #ff6b70;
+        }
+
+        .emotion.positive-emotion {
+            background-color: #d4f8d4;
+            color: #22a447;
+        }
+
+        body.dark-mode .emotion.positive-emotion {
+            background-color: rgba(50, 184, 198, 0.2);
+            color: #50d0d0;
+        }
+
+        .comparison-arrow {
+            font-size: 32px;
+            color: var(--color-teal-500);
+            font-weight: 300;
+            margin: 0 var(--space-16);
+        }
+
+        .comparison-insight {
+            background-color: #f0f8fb;
+            border-left: 4px solid var(--color-teal-500);
+            padding: var(--space-16) var(--space-20);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        body.dark-mode .comparison-insight {
+            background-color: rgba(33, 128, 141, 0.1);
+            border-color: var(--color-teal-500);
+        }
+
+        .comparison-insight p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--color-slate-500);
+        }
+
+        body.dark-mode .comparison-insight p {
+            color: #b0b0b0;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            margin-bottom: var(--space-32);
+        }
+
+        .benefits-section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin: 0 0 var(--space-32) 0;
+            color: #1f2121;
+        }
+
+        body.dark-mode .benefits-section h2 {
+            color: #e8e8e8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-20);
+        }
+
+        .benefit-card {
+            background: var(--color-white);
+            padding: var(--space-24);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--color-gray-200);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        body.dark-mode .benefit-card {
+            background-color: #353535;
+            border-color: #4a4a4a;
+        }
+
+        .benefit-card:hover {
+            box-shadow: 0 10px 25px rgba(33, 128, 141, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .benefit-icon {
+            font-size: 40px;
+            margin-bottom: var(--space-16);
+        }
+
+        .benefit-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 var(--space-12) 0;
+            color: #1f2121;
+        }
+
+        body.dark-mode .benefit-card h3 {
+            color: #e8e8e8;
+        }
+
+        .benefit-card p {
+            font-size: 13px;
+            color: var(--color-slate-500);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        body.dark-mode .benefit-card p {
+            color: #b0b0b0;
+        }
+
+        /* How It Works Section */
+        .how-it-works-section {
+            margin-bottom: var(--space-32);
+        }
+
+        .how-it-works-section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin: 0 0 var(--space-32) 0;
+            color: #1f2121;
+        }
+
+        body.dark-mode .how-it-works-section h2 {
+            color: #e8e8e8;
+        }
+
+        .phases-container {
+            display: flex;
+            gap: var(--space-16);
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-32);
+        }
+
+        .phase {
+            flex: 1;
+            min-width: 140px;
+            max-width: 180px;
+            background: var(--color-white);
+            padding: var(--space-20);
+            border-radius: var(--radius-base);
+            border: 2px solid var(--color-teal-500);
+            text-align: center;
+        }
+
+        body.dark-mode .phase {
+            background-color: #353535;
+            border-color: var(--color-teal-500);
+        }
+
+        .phase-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-teal-500);
+            margin-bottom: var(--space-8);
+        }
+
+        .phase-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2121;
+            margin-bottom: var(--space-8);
+        }
+
+        body.dark-mode .phase-title {
+            color: #e8e8e8;
+        }
+
+        .phase p {
+            font-size: 12px;
+            color: var(--color-slate-500);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        body.dark-mode .phase p {
+            color: #b0b0b0;
+        }
+
+        .phase-arrow {
+            font-size: 24px;
+            color: var(--color-teal-500);
+            font-weight: 300;
+            margin: 0 var(--space-8);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
+            padding: var(--space-32);
+            border-radius: var(--radius-base);
+            text-align: center;
+            color: var(--color-white);
+        }
+
+        .cta-section h2 {
+            font-size: 28px;
+            margin: 0 0 var(--space-16) 0;
+            color: var(--color-white);
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            margin: 0 0 var(--space-24) 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-large {
+            padding: var(--space-16) var(--space-32);
+            font-size: 16px;
+            font-weight: 600;
+            background-color: var(--color-white);
+            color: var(--color-teal-500);
+            border: none;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .btn-large:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Reflection Page */
+        .reflection-page {
+            display: none;
+        }
+
+        .reflection-page.active {
+            display: block;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--color-teal-500);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: var(--space-16);
+            padding: 0;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        body.dark-mode .btn-back {
+            color: var(--color-teal-300);
+        }
+
+        .btn-back:hover {
+            color: var(--color-teal-600);
+        }
+
+        /* Cookie Banner Styles */
+        .cookie-banner {
+            position: fixed;
+            bottom: var(--space-20);
+            left: var(--space-20);
+            max-width: 500px;
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-base);
+            padding: var(--space-20);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+
+        .cookie-banner.hidden {
+            display: none;
+        }
+
+        body.dark-mode .cookie-banner {
+            background: #353535;
+            border-color: #4a4a4a;
+        }
+
+        .cookie-content p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--color-slate-500);
+            line-height: 1.5;
+        }
+
+        body.dark-mode .cookie-content p {
+            color: #b0b0b0;
+        }
+
+        .cookie-content a {
+            color: var(--color-teal-500);
+            text-decoration: underline;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: var(--space-12);
+        }
+
+        .btn-cookie-accept {
+            flex: 1;
+            padding: var(--space-8) var(--space-16);
+            background-color: var(--color-teal-500);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .btn-cookie-accept:hover {
+            background-color: var(--color-teal-600);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                left: var(--space-12);
+                right: var(--space-12);
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-header h1 {
+                font-size: 32px;
+            }
+
+            .comparison-container {
+                flex-direction: column;
+                gap: var(--space-16);
+            }
+
+            .comparison-arrow {
+                transform: rotate(90deg);
+                margin: 0;
+            }
+
+            .phases-container {
+                flex-direction: column;
+                gap: var(--space-12);
+            }
+
+            .phase-arrow {
+                transform: rotate(90deg);
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section {
+                margin-bottom: var(--space-32);
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">☀️</button>
+
+    <!-- Cookie Banner -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-content">
+            <p>Wir verwenden Cookies und ähnliche Technologien, um dein Erlebnis zu verbessern, Inhalte zu personalisieren und Zugriffe zu analysieren. Indem du auf „Akzeptieren" klickst, stimmst du der Verwendung dieser Technologien zu. <a href="#" onclick="event.preventDefault()">Datenschutz</a></p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="btn-cookie-accept" onclick="acceptCookies()">Akzeptieren</button>
+        </div>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page active">
+        <div class="landing-container">
+            <header class="landing-header">
+                <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-12); margin-bottom: var(--space-16);">
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="16" stroke="var(--color-teal-500)" stroke-width="2"/>
+                        <path d="M18 8 L22 14 L18 16 L14 14 Z" fill="var(--color-teal-500)"/>
+                        <path d="M26 18 L28 22 L24 24 L22 20 Z" fill="var(--color-teal-500)" opacity="0.7"/>
+                        <path d="M18 28 L14 22 L18 20 L22 22 Z" fill="var(--color-teal-500)" opacity="0.5"/>
+                        <path d="M10 18 L8 14 L12 12 L14 16 Z" fill="var(--color-teal-500)" opacity="0.7"/>
+                    </svg>
+                </div>
+                <h1>Kolb's Reflection</h1>
+                <p class="landing-subtitle">Transform your challenges into learning opportunities</p>
+            </header>
+
+            <section class="comparison-section">
+                <h2>How you see your mistakes</h2>
+                
+                <div class="comparison-container">
+                    <!-- Negative Approach -->
+                    <div class="comparison-card negative">
+                        <div class="comparison-label">Without Reflection</div>
+                        <div class="comparison-content">
+                            <p class="mistake-text strikethrough">
+                                "I failed again. I'm just not good enough at this. This will never change."
+                            </p>
+                        </div>
+                        <div class="emotion negative-emotion">😞 Frustration & Hopelessness</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="comparison-arrow">→</div>
+
+                    <!-- Positive Approach with Kolb -->
+                    <div class="comparison-card positive">
+                        <div class="comparison-label">With Kolb's Reflection</div>
+                        <div class="comparison-content">
+                            <p class="mistake-text corrected">
+                                "I failed again. Interesting – I noticed that I wanted to act too quickly. Next time, I'll take more time to plan. This learning will help me."
+                            </p>
+                        </div>
+                        <div class="emotion positive-emotion">✨ Growth & Hope</div>
+                    </div>
+                </div>
+
+                <div class="comparison-insight">
+                    <p>
+                        The difference lies not in the situation – but in <strong>how you interpret it</strong> and learn from it.
+                    </p>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2>Start Your Reflection</h2>
+                <p>Transform your experiences into real learning opportunities – available now, free and private.</p>
+                <button class="btn-large" onclick="goToReflection()">Get Started Now</button>
+            </section>
+
+            <section class="benefits-section">
+                <h2>Why Kolb's Reflection?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🔍</div>
+                        <h3>Deeper Understanding</h3>
+                        <p>Understand why something happened, not just that it happened.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🚀</div>
+                        <h3>Faster Learning</h3>
+                        <p>Turn every experience into valuable knowledge for your future.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💪</div>
+                        <h3>More Confidence</h3>
+                        <p>Recognize your growth and learning ability in every situation.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎯</div>
+                        <h3>Better Decisions</h3>
+                        <p>Make better decisions in the future based on your insights.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="how-it-works-section">
+                <h2>The 4 Phases of Kolb's Reflection</h2>
+                <div class="phases-container">
+                    <div class="phase">
+                        <div class="phase-number">1</div>
+                        <div class="phase-title">Concrete Experience</div>
+                        <p>What happened? Describe the situation.</p>
+                    </div>
+                    <div class="phase-arrow">→</div>
+                    <div class="phase">
+                        <div class="phase-number">2</div>
+                        <div class="phase-title">Reflective Observation</div>
+                        <p>How did you feel? What was surprising?</p>
+                    </div>
+                    <div class="phase-arrow">→</div>
+                    <div class="phase">
+                        <div class="phase-number">3</div>
+                        <div class="phase-title">Abstract Conceptualization</div>
+                        <p>What can you learn from this?</p>
+                    </div>
+                    <div class="phase-arrow">→</div>
+                    <div class="phase">
+                        <div class="phase-number">4</div>
+                        <div class="phase-title">Active Experimentation</div>
+                        <p>How will you do it differently next time?</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Reflection Page -->
+    <div id="reflectionPage" class="reflection-page">
+        <div class="container">
+            <button class="btn-back" onclick="backToLanding()">← Back to Home</button>
+            <header>
+                <h1>Kolb's Reflection</h1>
+                <p class="subtitle">Experiential Learning Through Reflection</p>
+            </header>
+
+        <div class="progress-container">
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+        </div>
+
+        <div class="stages-container">
+            <div class="stage-indicator active">Concrete<br>Experience</div>
+            <div class="stage-indicator">Reflective<br>Observation</div>
+            <div class="stage-indicator">Abstract<br>Conceptualization</div>
+            <div class="stage-indicator">Active<br>Experimentation</div>
+        </div>
+
+        <div class="main-content">
+            <div class="stage active" data-stage="1">
+                <h2 class="stage-title">Concrete Experience</h2>
+                <p class="stage-subtitle">Describe what happened. Set the context for your reflection.</p>
+                <div class="prompt-container">
+                    <p class="prompt-text" id="prompt1"></p>
+                </div>
+                <textarea id="input1" placeholder="Write your observation here..."></textarea>
+                <div class="button-group">
+                    <button class="btn-primary" onclick="nextStage()">Continue</button>
+                </div>
+            </div>
+
+            <div class="stage" data-stage="2">
+                <h2 class="stage-title">Reflective Observation</h2>
+                <p class="stage-subtitle">Reflect on your experience. What did you learn? How did you feel?</p>
+                <div class="summary-container">
+                    <div class="summary-item">
+                        <span class="summary-label">Your Experience</span>
+                        <p class="summary-text" id="summary1"></p>
+                    </div>
+                </div>
+                <div class="prompt-container">
+                    <p class="prompt-text" id="prompt2"></p>
+                </div>
+                <textarea id="input2" placeholder="Write your reflections here..."></textarea>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStage()">Back</button>
+                    <button class="btn-primary" onclick="nextStage()">Continue</button>
+                </div>
+            </div>
+
+            <div class="stage" data-stage="3">
+                <h2 class="stage-title">Abstract Conceptualization</h2>
+                <p class="stage-subtitle">Form new ideas and theories. How will these insights guide your future actions?</p>
+                <div class="summary-container">
+                    <div class="summary-item">
+                        <span class="summary-label">Your Experience</span>
+                        <p class="summary-text" id="summary2"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Your Reflections</span>
+                        <p class="summary-text" id="summary3"></p>
+                    </div>
+                </div>
+                <div class="prompt-container">
+                    <p class="prompt-text" id="prompt3"></p>
+                </div>
+                <textarea id="input3" placeholder="Write your concepts and insights here..."></textarea>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStage()">Back</button>
+                    <button class="btn-primary" onclick="nextStage()">Continue</button>
+                </div>
+            </div>
+
+            <div class="stage" data-stage="4">
+                <h2 class="stage-title">Active Experimentation</h2>
+                <p class="stage-subtitle">Plan your next steps. How will you test your new ideas?</p>
+                <div class="summary-container">
+                    <div class="summary-item">
+                        <span class="summary-label">Your Experience</span>
+                        <p class="summary-text" id="summary4"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Your Reflections</span>
+                        <p class="summary-text" id="summary5"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Your Insights</span>
+                        <p class="summary-text" id="summary6"></p>
+                    </div>
+                </div>
+                <div class="prompt-container">
+                    <p class="prompt-text" id="prompt4"></p>
+                </div>
+                <textarea id="input4" placeholder="Describe your experiment and next steps here..."></textarea>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStage()">Back</button>
+                    <button class="btn-primary" onclick="completeReflection()">Complete</button>
+                </div>
+            </div>
+
+            <div class="stage" id="completionStage">
+                <h2 class="stage-title">Reflection Complete</h2>
+                <p class="stage-subtitle">Your Kolb's Reflection has been recorded.</p>
+                <div class="summary-container">
+                    <div class="summary-item">
+                        <span class="summary-label">Concrete Experience</span>
+                        <p class="summary-text" id="final-summary1"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Reflective Observation</span>
+                        <p class="summary-text" id="final-summary2"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Abstract Conceptualization</span>
+                        <p class="summary-text" id="final-summary3"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Active Experimentation</span>
+                        <p class="summary-text" id="final-summary4"></p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="resetForm()">Start New Reflection</button>
+                    <button class="btn-primary download-btn" onclick="showDownloadModal()">Download Reflection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="downloadModal">
+        <div>
+            <h3>Download Reflection</h3>
+            <p>Choose your preferred format:</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-12);">
+                <button class="btn-primary" onclick="downloadAsPDF()">📄 Download as PDF</button>
+                <button class="btn-primary" onclick="downloadAsTXT()">📝 Download as TXT</button>
+                <button class="btn-primary" onclick="downloadAsMarkdown()">✏️ Download as Markdown</button>
+                <button class="btn-secondary" onclick="closeDownloadModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let promptLoopState = {};
+
+        const prompts = [
+            [
+                "What situation or experience do you want to reflect on?",
+                "Describe the key events that occurred. What happened?",
+                "Who was involved in this experience?",
+                "Where and when did this happen?",
+                "What were the specific actions or behaviors you observed?"
+            ],
+            [
+                "What emotions did you experience during this event?",
+                "Were there any surprises or unexpected outcomes?",
+                "What assumptions did you have before the experience?",
+                "How did reality differ from your expectations?",
+                "What patterns do you notice in this experience?"
+            ],
+            [
+                "What did you learn from this experience?",
+                "How does this experience connect to broader concepts or theories?",
+                "What underlying reasons explain why things happened this way?",
+                "What principles or insights can you extract from this?",
+                "How will this learning apply to similar future situations?"
+            ],
+            [
+                "What specific action will you take based on this learning?",
+                "How will you test your new understanding?",
+                "What is your next experiment or attempt?",
+                "What resources or support do you need?",
+                "How will you know if your experiment was successful?"
+            ]
+        ];
+
+        let currentStage = 1;
+        const reflectionData = {};
+
+        async function typeOutAndDelete(element, text, typingSpeed = 40, displayDuration = 3500, deleteSpeed = 40) {
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text.charAt(i);
+                await new Promise(resolve => setTimeout(resolve, typingSpeed));
+            }
+            await new Promise(resolve => setTimeout(resolve, displayDuration));
+            for (let i = text.length; i > 0; i--) {
+                element.textContent = text.substring(0, i - 1);
+                await new Promise(resolve => setTimeout(resolve, deleteSpeed));
+            }
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        async function rotatePrompt(stageIndex) {
+            const promptArray = prompts[stageIndex - 1];
+            const promptElement = document.getElementById(`prompt${stageIndex}`);
+            let promptIndex = 0;
+
+            async function cyclePrompts() {
+                while (true) {
+                    promptElement.textContent = '';
+                    await typeOutAndDelete(promptElement, promptArray[promptIndex], 40, 3500, 40);
+                    promptIndex = (promptIndex + 1) % promptArray.length;
+                }
+            }
+            cyclePrompts();
+        }
+
+        function nextStage() {
+            const currentInput = document.getElementById(`input${currentStage}`);
+            const inputValue = currentInput.value.trim();
+
+            if (!inputValue) {
+                alert('Please write something before continuing.');
+                return;
+            }
+
+            reflectionData[currentStage] = inputValue;
+            updateSummaries();
+
+            if (currentStage < 4) {
+                document.querySelector(`.stage[data-stage="${currentStage}"]`).classList.remove('active');
+                document.getElementById(`prompt${currentStage}`).textContent = '';
+                currentStage++;
+                document.querySelector(`.stage[data-stage="${currentStage}"]`).classList.add('active');
+                updateProgress();
+                rotatePrompt(currentStage);
+            }
+        }
+
+        function prevStage() {
+            const currentInput = document.getElementById(`input${currentStage}`);
+            reflectionData[currentStage] = currentInput.value.trim();
+
+            document.querySelector(`.stage[data-stage="${currentStage}"]`).classList.remove('active');
+            document.getElementById(`prompt${currentStage}`).textContent = '';
+            currentStage--;
+            document.querySelector(`.stage[data-stage="${currentStage}"]`).classList.add('active');
+            updateProgress();
+            rotatePrompt(currentStage);
+        }
+
+        function updateProgress() {
+            const steps = document.querySelectorAll('.progress-step');
+            const indicators = document.querySelectorAll('.stage-indicator');
+
+            steps.forEach((step, index) => {
+                if (index < currentStage) {
+                    step.classList.add('active', 'completed');
+                } else if (index === currentStage - 1) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+
+            indicators.forEach((indicator, index) => {
+                if (index === currentStage - 1) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        function updateSummaries() {
+            const summaryIds = ['summary1', 'summary2', 'summary3', 'summary4', 'summary5', 'summary6'];
+            const dataMap = [1, 1, 2, 3, 2, 3];
+
+            summaryIds.forEach((id, index) => {
+                const element = document.getElementById(id);
+                if (element && reflectionData[dataMap[index]]) {
+                    const text = reflectionData[dataMap[index]];
+                    element.textContent = text.length > 200 ? text.substring(0, 200) + '...' : text;
+                }
+            });
+        }
+
+        function completeReflection() {
+            const currentInput = document.getElementById(`input${currentStage}`);
+            const inputValue = currentInput.value.trim();
+
+            if (!inputValue) {
+                alert('Please write something before completing.');
+                return;
+            }
+
+            reflectionData[currentStage] = inputValue;
+
+            document.querySelector(`.stage[data-stage="${currentStage}"]`).classList.remove('active');
+            document.getElementById('completionStage').classList.add('active');
+
+            document.getElementById('final-summary1').textContent = reflectionData[1];
+            document.getElementById('final-summary2').textContent = reflectionData[2];
+            document.getElementById('final-summary3').textContent = reflectionData[3];
+            document.getElementById('final-summary4').textContent = reflectionData[4];
+
+            updateProgress();
+        }
+
+        function resetForm() {
+            reflectionData = {};
+            currentStage = 1;
+
+            document.getElementById('completionStage').classList.remove('active');
+            document.querySelector(`.stage[data-stage="1"]`).classList.add('active');
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`input${i}`).value = '';
+            }
+
+            updateProgress();
+            rotatePrompt(1);
+        }
+
+        function showDownloadModal() {
+            document.getElementById('downloadModal').classList.add('active');
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('active');
+        }
+
+        function downloadAsPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 15;
+            const maxWidth = pageWidth - 2 * margin;
+            let yPosition = margin;
+
+            doc.setFontSize(20);
+            doc.setTextColor(33, 128, 141);
+            doc.text("Kolb's Reflection", margin, yPosition);
+            yPosition += 10;
+
+            doc.setFontSize(10);
+            doc.setTextColor(98, 108, 113);
+            doc.text("Experiential Learning Through Reflection", margin, yPosition);
+            yPosition += 15;
+
+            const addSection = (title, content) => {
+                if (yPosition > pageHeight - 30) {
+                    doc.addPage();
+                    yPosition = margin;
+                }
+
+                doc.setFontSize(14);
+                doc.setTextColor(33, 128, 141);
+                doc.text(title, margin, yPosition);
+                yPosition += 8;
+
+                doc.setFontSize(11);
+                doc.setTextColor(31, 33, 33);
+                const lines = doc.splitTextToSize(content, maxWidth);
+                doc.text(lines, margin, yPosition);
+                yPosition += lines.length * 5 + 10;
+            };
+
+            addSection("Concrete Experience", reflectionData[1] || "");
+            addSection("Reflective Observation", reflectionData[2] || "");
+            addSection("Abstract Conceptualization", reflectionData[3] || "");
+            addSection("Active Experimentation", reflectionData[4] || "");
+
+            doc.setFontSize(9);
+            doc.setTextColor(167, 169, 169);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, margin, pageHeight - 10);
+
+            doc.save(`reflection_${new Date().getTime()}.pdf`);
+            closeDownloadModal();
+        }
+
+        function downloadAsTXT() {
+            const content = `KOLB'S REFLECTION
+===================================
+
+CONCRETE EXPERIENCE
+${reflectionData[1] || ""}
+
+REFLECTIVE OBSERVATION
+${reflectionData[2] || ""}
+
+ABSTRACT CONCEPTUALIZATION
+${reflectionData[3] || ""}
+
+ACTIVE EXPERIMENTATION
+${reflectionData[4] || ""}
+
+===================================
+Generated: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reflection_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            closeDownloadModal();
+        }
+
+        function downloadAsMarkdown() {
+            const content = `# Kolb's Reflection
+
+**Experiential Learning Through Reflection**
+
+---
+
+## Concrete Experience
+
+${reflectionData[1] || ""}
+
+---
+
+## Reflective Observation
+
+${reflectionData[2] || ""}
+
+---
+
+## Abstract Conceptualization
+
+${reflectionData[3] || ""}
+
+---
+
+## Active Experimentation
+
+${reflectionData[4] || ""}
+
+---
+
+**Generated:** ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reflection_${new Date().getTime()}.md`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            closeDownloadModal();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            body.classList.toggle('dark-mode');
+            html.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                html.classList.add('dark-mode');
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+        }
+
+        function goToReflection() {
+            document.getElementById('landingPage').classList.remove('active');
+            document.getElementById('reflectionPage').classList.add('active');
+        }
+
+        function backToLanding() {
+            document.getElementById('reflectionPage').classList.remove('active');
+            document.getElementById('landingPage').classList.add('active');
+        }
+
+        function acceptCookies() {
+            const cookieBanner = document.getElementById('cookieBanner');
+            if (cookieBanner) {
+                cookieBanner.style.display = 'none';
+                localStorage.setItem('cookiesAccepted', 'true');
+            }
+        }
+
+        function checkCookiesAccepted() {
+            const cookiesAccepted = localStorage.getItem('cookiesAccepted');
+            const cookieBanner = document.getElementById('cookieBanner');
+            if (cookiesAccepted === 'true' && cookieBanner) {
+                cookieBanner.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadThemePreference();
+            checkCookiesAccepted();
+            rotatePrompt(1);
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
